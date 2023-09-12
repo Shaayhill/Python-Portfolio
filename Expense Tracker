@@ -19,29 +19,42 @@ def load_expenses():
 
 # Function to display the main menu
 def show_menu():
-    print("Expense Tracker")
+    print("\nExpense Tracker")
     print("1. Add Expense")
     print("2. View Expenses")
     print("3. Search Expenses")
-    print("4. Exit")
+    print("4. Filter Expenses by Date")
+    print("5. Exit")
+
+# Function to get a valid date from the user
+def get_valid_date_input(prompt):
+    while True:
+        try:
+            date_str = input(prompt + " (YYYY-MM-DD): ")
+            return datetime.datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            print("Invalid date format. Please use YYYY-MM-DD.")
 
 # Function to add a new expense
 def add_expense():
-    amount = float(input("Enter the expense amount: "))
-    description = input("Enter a short description: ")
-    category = input("Enter expense category: ")
-    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    expense = {
-        "amount": amount,
-        "description": description,
-        "category": category,
-        "date": date
-    }
-    
-    expenses.append(expense)
-    save_expenses()
-    print("Expense added successfully!")
+    try:
+        amount = float(input("Enter the expense amount: "))
+        description = input("Enter a short description: ")
+        category = input("Enter expense category: ")
+        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        expense = {
+            "amount": amount,
+            "description": description,
+            "category": category,
+            "date": date
+        }
+        
+        expenses.append(expense)
+        save_expenses()
+        print("Expense added successfully!")
+    except ValueError:
+        print("Invalid input. Please enter a valid expense amount.")
 
 # Function to view expenses
 def view_expenses():
@@ -74,27 +87,21 @@ def search_expenses():
 
 # Function to filter expenses by date range
 def filter_expenses_by_date():
-    try:
-        start_date_str = input("Enter start date (YYYY-MM-DD): ")
-        end_date_str = input("Enter end date (YYYY-MM-DD): ")
-        
-        start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d")
-        end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d")
-        
-        filtered_expenses = [expense for expense in expenses if start_date <= datetime.datetime.strptime(expense['date'], "%Y-%m-%d %H:%M:%S") <= end_date]
-        
-        if filtered_expenses:
-            print("\nExpenses within the specified date range:")
-            for expense in filtered_expenses:
-                print(f"Date: {expense['date']}")
-                print(f"Amount: ${expense['amount']:.2f}")
-                print(f"Description: {expense['description']}")
-                print(f"Category: {expense['category']}")
-                print("-" * 30)
-        else:
-            print("No expenses found within the specified date range.")
-    except ValueError:
-        print("Invalid date format. Please use YYYY-MM-DD.")
+    start_date = get_valid_date_input("Enter start date")
+    end_date = get_valid_date_input("Enter end date")
+    
+    filtered_expenses = [expense for expense in expenses if start_date <= datetime.datetime.strptime(expense['date'], "%Y-%m-%d %H:%M:%S") <= end_date]
+    
+    if filtered_expenses:
+        print("\nExpenses within the specified date range:")
+        for expense in filtered_expenses:
+            print(f"Date: {expense['date']}")
+            print(f"Amount: ${expense['amount']:.2f}")
+            print(f"Description: {expense['description']}")
+            print(f"Category: {expense['category']}")
+            print("-" * 30)
+    else:
+        print("No expenses found within the specified date range.")
 
 # Main program loop
 expenses = load_expenses()
