@@ -1,0 +1,41 @@
+# Initialize budget and shopping cart
+budget = 1500
+shopping_cart = []
+
+# Define the maximum number of items in the cart
+max_cart_items = 5
+
+# Function to check if an item is within the budget
+def check_item_price(price):
+    if price < budget:
+        return "less than your budget"
+    elif price == budget:
+        return "equal to your budget"
+    else:
+        return "too expensive, do not buy"
+
+# Main loop to input and process sale prices
+while len(shopping_cart) < max_cart_items:
+    try:
+        sale_price = float(input("Enter the sale price of an item (0 to stop): "))
+        
+        if sale_price == 0:
+            break
+        
+        result = check_item_price(sale_price)
+        
+        if result == "less than your budget" or result == "equal to your budget":
+            shopping_cart.append(sale_price)
+        
+        print(f"This item is {result}.")
+        
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+# Display the items in the shopping cart
+if shopping_cart:
+    print("\nItems in your shopping cart:")
+    for i, item in enumerate(shopping_cart, start=1):
+        print(f"Item {i}: ${item:.2f}")
+else:
+    print("Your shopping cart is empty.")
